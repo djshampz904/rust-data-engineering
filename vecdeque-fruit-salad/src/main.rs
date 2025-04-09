@@ -9,8 +9,9 @@ of the queue.
 */
 
 use rand::seq::SliceRandom; // rand is a random number generation library in Rust
-use rand::thread_rng;
+use rand::{thread_rng, Rng};
 use std::collections::VecDeque;
+use std::io;
 
 fn main() {
     let mut fruit: VecDeque<&str> = VecDeque::new();
@@ -31,6 +32,23 @@ fn main() {
     fruit.push_back("Fig");
     fruit.push_back("Cherry");
 
+    let mut fruit: VecDeque<_> = fruit.into_iter().collect();
+
+    let mut user_input_end = String::new();
+    println!("Please enter the name of the fruit you want to add at the end of the vec: ");
+    io::stdin()
+        .read_line(&mut user_input_end)
+        .expect("Failed to read line");
+
+    fruit.push_back(user_input_end.trim());
+
+    let fruit: Vec<_> = fruit.into_iter().collect();
+
+    let random_fruit = fruit.choose(&mut rng).unwrap();
+    println!("Random fruit selected: {}", random_fruit);
+
+    let mut fruit: VecDeque<_> = fruit.into_iter().collect();
+
     // Print out the fruit salad
     println!("Fruit Salad:");
     for (i, item) in fruit.iter().enumerate() {
@@ -39,5 +57,11 @@ fn main() {
         } else {
             println!("{}", item);
         }
+    }
+
+    if rng.gen_bool(0.5) {
+        println!("{:?}", fruit.pop_back().unwrap())
+    } else {
+        println!("{:?}", fruit.pop_front().unwrap())
     }
 }
